@@ -1,0 +1,18 @@
+.env
+*.env
+node_modules/
+__pycache__/
+.DS_Store
+.chroma/
+data.json
+config.json
+todo.txt
+# Google Drive ingestion: OAuth secrets, cached token, and the local mirror
+credentials.json
+token.json
+.drive_cache/
+venv/
+
+# Personal Data
+config.json
+data.json

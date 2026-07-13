@@ -49,7 +49,7 @@ def handle_command(paige, user_input):
     elif command == "/write":
         print("Paige: What would you like me to write about?")
         text = input("User :: ")
-        paige.scribe.create_article(text)
+        paige.scribe.write_article(text)
     elif command == "/compare":
         print("Paige: Enter the text you would like to compare with")
         text = input("User :: ")

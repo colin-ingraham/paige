@@ -21,7 +21,8 @@ class Paige:
             )
         self.client = anthropic.Anthropic()
         self.library = Library()
-        self.scribe = Scribe(self.search, self.library, self.client)
+        self.write_path = self.library.sources[0]
+        self.scribe = Scribe(self.search, self.library, self.client, self.write_path)
         if not self.library.get_sources():
             print(f"Paige :: Welcome to Paige! In order to continue, please first add a main path for Paige to reference.")
             self.library.add_source(input("User:: "))

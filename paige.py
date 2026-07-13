@@ -1,4 +1,5 @@
 from library import Library, read_file
+from scribe import Scribe
 import anthropic
 from dotenv import load_dotenv
 import os
@@ -12,21 +13,24 @@ class Paige:
     # this keeps roughly the last MAX_HISTORY_MESSAGES / 2 question-answer turns.
     MAX_HISTORY_MESSAGES = 20
 
-    def __init__(self, main_path=None, library=None, history=None):
+    def __init__(self):
         load_dotenv()
         if not os.getenv("ANTHROPIC_API_KEY"):
             raise RuntimeError(
                 "ANTHROPIC_API_KEY is not set. Add it to your .env file before running Paige."
             )
         self.client = anthropic.Anthropic()
-        # The web app builds one Library per user project and injects it; the CLI
-        # keeps the simple path-based construction.
-        self.library = library if library is not None else Library(main_path)
+        self.library = Library()
+        self.scribe = Scribe(self.search, self.library, self.client)
+        if not self.library.get_sources():
+            print(f"Paige :: Welcome to Paige! In order to continue, please first add a main path for Paige to reference.")
+            self.library.add_source(input("User:: "))
+
         # Plain question/answer turns only (no retrieved-article text), so follow-up
         # questions retain context without the history bloating every later request.
         # A caller can seed prior turns (e.g. reloaded from a database) so
         # conversations survive restarts; the cap still applies.
-        self.history = list(history)[-self.MAX_HISTORY_MESSAGES:] if history else []
+        self.history = []
 
     def ask_paige(self, prompt):
         # Rewrite follow-ups into a standalone query so retrieval uses the right context,

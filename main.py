@@ -8,10 +8,10 @@ from drive import DriveError
 # where the console/pipe would otherwise default to cp1252 and mangle it.
 sys.stdout.reconfigure(encoding="utf-8")
 
-main_path = "I:/Terrastis Wiki"
-
 HELP_TEXT = """Commands:
   /help                  Show this help
+  /write                 Allow Paige to create a lore article based on input and existing library
+  /compare               Compare specified text against library              
   /sources               List the local dirs and Drive folders Paige indexes
   /addsource <path>      Add a local directory to the index
   /removesource <path>   Remove a local directory from the index
@@ -46,6 +46,14 @@ def handle_command(paige, user_input):
         return False
     elif command == "/help":
         print(HELP_TEXT)
+    elif command == "/write":
+        print("Paige: What would you like me to write about?")
+        text = input("User :: ")
+        paige.scribe.create_article(text)
+    elif command == "/compare":
+        print("Paige: Enter the text you would like to compare with")
+        text = input("User :: ")
+        paige.scribe.compare(text)
     elif command == "/sources":
         sources = paige.list_sources()
         drive_sources = paige.list_drive_sources()
@@ -130,9 +138,8 @@ def handle_command(paige, user_input):
 
     return True
 
-
 try:
-    paige = Paige(main_path)
+    paige = Paige()
 except RuntimeError as e:
     print(f"Paige :: {e}")
     raise SystemExit(1)

@@ -16,3 +16,4 @@ venv/
 # Personal Data
 config.json
 data.json
+CLAUDE.md

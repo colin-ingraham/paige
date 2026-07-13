@@ -23,10 +23,7 @@ class Library:
 
     def __init__(self, main_path=None, chroma_path=".chroma", workspace=".",
                  collection_name="paige", chroma_client=None, drive_token_path=None):
-        # All of this library's state (config.json, data.json, drive cache) lives
-        # under `workspace`, so multiple independent libraries — e.g. one per user
-        # project in the web app — never touch each other's files. The default "."
-        # preserves the original single-workspace CLI behavior.
+        
         self.workspace = Path(workspace)
         self.workspace.mkdir(parents=True, exist_ok=True)
         self.config_path = self.workspace / "config.json"
@@ -39,7 +36,7 @@ class Library:
         # None falls back to drive.py's default single-user token file.
         self.drive_token_path = drive_token_path
 
-        config = self.load_config(main_path)
+        config = self.load_config()
         self.sources = config["sources"]
         self.drive_sources = config["drive_sources"]
 
@@ -287,6 +284,8 @@ class Library:
 
     def embed_file(self, path):
         chunks = self.chunk_file(path)
+        if not chunks:
+            return
         ids = []
         metadatas = []
         for i in range(len(chunks)):
